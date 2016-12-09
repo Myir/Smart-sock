@@ -1,0 +1,48 @@
+ 
+//实现接收到的开发板的相关数据显示
+bt3.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View arg0) {
+                setContentView(R.layout.second);
+                wv1 = (WebView) findViewById(R.id.webView);
+                WebSettings webSettings = wv1.getSettings();
+                wv1.getSettings().setJavaScriptEnabled(true);
+                webSettings.setBuiltInZoomControls(true);
+                wv1.setWebViewClient(new Callback());
+                wv1.loadUrl("http://120.24.12.197:16420");
+            }
+        });
+//这是实现发送开发板控制命令的相关核心代码，这里是关机口令，开机口令同理，不在赘述。
+public void MeShutdown() {
+        AsyncTask<Void, String, Void> read = new AsyncTask<Void, String, Void>() {
+            @Override
+            protected Void doInBackground(Void... arg0) {
+                PrintStream ps;
+                Socket socket = null;
+                try {
+                    socket = new Socket("120.24.12.197", 16421);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                String content = null;
+                content = "1";//以字符串‘1’作为插座关闭的控制口令。
+                try {
+                    ps = new PrintStream(socket.getOutputStream(), true, "UTF-8");
+                    ps.print(content);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                try
+                {
+                    socket.close();
+                } catch (IOException e)
+                {
+                    e.printStackTrace();
+                }
+              return null;
+            }
+        };
+        read.execute();
+        
+}

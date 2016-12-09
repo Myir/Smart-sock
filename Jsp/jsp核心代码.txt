@@ -1,0 +1,20 @@
+
+String connectionString = "jdbc:mysql://localhost:3306/TEST_DATABASE?user=root&password=123456";
+Class.forName("com.mysql.jdbc.Driver");
+conn = DriverManager.getConnection(connectionString);
+stmt=conn.prepareStatement("select * from POWER");
+rs=stmt.executeQuery();
+out.print("<TABLE BORDER='1' width='55%' cellpadding='3' align=center>");
+out.print("<TR><TD>"+"<b>时间</b>"+"</TD>");
+out.print("<TD>"+"<b>电量</b>"+"</TD></TR>");
+
+while(rs.next()){
+out.print("<TR><TD>"+rs.getString(1)+"</TD>");
+out.print("<TD>"+rs.getString(2)+"</TD></TR>");
+}
+
+out.print("</TABLE>");
+    
+rs.close();
+stmt.close();
+conn.close();

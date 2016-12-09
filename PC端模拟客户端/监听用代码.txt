@@ -1,0 +1,46 @@
+#include <Winsock2.h>
+#pragma comment(lib,"Ws2_32.lib")
+#include <stdio.h>
+#include <memory.h>
+
+void main()
+{
+	WSAData wsd;
+	WSAStartup(MAKEWORD(2, 0), &wsd);
+
+	SOCKET s = NULL;
+	s = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+	struct sockaddr_in ch;
+	memset(&ch, 0, sizeof(ch));
+	ch.sin_family = AF_INET;
+	ch.sin_addr.s_addr = INADDR_ANY;
+	ch.sin_port = htons(13450);
+	int b = bind(s, (struct sockaddr *) &ch, sizeof(ch));
+#define QUEUE_SIZE 5
+	int l = listen(s, QUEUE_SIZE);
+	printf("正在监听本机的13450端口！\n");
+	SOCKET sc = accept(s, 0, 0);
+	printf("客户端已经连接到本机的1041端口！\n");
+#define BUF_SIZE 4096
+	int receByt = 0;
+	while (1)
+	{
+		char buf[BUF_SIZE];
+		receByt = recv(sc, buf, BUF_SIZE, 0);
+		buf[receByt] = '\0';
+		if (receByt>0)
+		{
+			printf("接收的消息是：%s\n", buf);
+		}
+		else
+		{
+			printf("接收消息结束！");
+			break;
+		}
+
+	}
+	int ic = closesocket(sc);
+	int is = closesocket(s);
+
+}
+
